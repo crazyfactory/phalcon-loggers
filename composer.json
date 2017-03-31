@@ -1,0 +1,25 @@
+{
+    "name": "crazyfactory/phalcon-loggers",
+    "description": "Phalcon logging adapters for Slack and Sentry.",
+    "type": "library",
+    "keywords": [
+        "phalcon", "adpaters", "slack", "sentry", "logger", "logging", "phalcon-slack", "phalcon-sentry"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jitendra Adhikari",
+            "email": "jiten.adhikary@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CrazyFactory\\PhalconLogger\\": "src/"
+        }
+    },
+    "suggest": {
+        "sentry/sentry": "To be able to use the Sentry logging."
+    },
+    "require": {
+    }
+}
