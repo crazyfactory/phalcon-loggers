@@ -95,6 +95,10 @@ class Service
                 $loggerStack->push($di->getShared($service));
             }
 
+            if ($config->requestId) {
+                $loggerStack->setRequestId($config->requestId);
+            }
+
             return $loggerStack;
         });
     }

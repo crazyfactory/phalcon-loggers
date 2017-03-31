@@ -21,7 +21,7 @@ putenv('SENTRY_CURL_METHOD=exec');
 // require_once __DIR__ . '/../vendor/sentry/sentry/lib/Raven/Autoloader.php';
 // Raven_Autoloader::register();
 
-$id = rand();
+$id = (new Phalcon\Security\Random)->uuid();
 $di = new Phalcon\Di\FactoryDefault;
 
 (new CrazyFactory\PhalconLogger\Service)->register(null, $di);

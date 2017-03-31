@@ -73,6 +73,8 @@ class Multiple extends Logger\Multiple
      */
     public function setRequestId(string $requestId) : Multiple
     {
+        $requestId = substr(str_replace([' ', '-', '_'], '', $requestId), 0, 32);
+
         foreach ($this->_loggers as $logger) {
             if (method_exists($logger, 'setRequestId')) {
                 $logger->setRequestId($requestId);

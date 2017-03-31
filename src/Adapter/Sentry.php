@@ -212,7 +212,7 @@ class Sentry extends Logger\Adapter
     public function setRequestId(string $requestId) : Sentry
     {
         if (empty($this->requestId)) {
-            $this->requestId = substr(str_replace([' ', '-', '_'], '', $requestId), 0, 32);
+            $this->requestId = $requestId;
         }
 
         return $this;
