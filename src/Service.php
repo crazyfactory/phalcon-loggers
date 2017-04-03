@@ -16,8 +16,8 @@ class Service
         'slack'  => 'slack',
     ];
 
-    // Loggers provided by the service and their FQCN.
-    private $loggers = [
+    // Loggers provided by the service and their FQCN. The keys here should match the service keys above.
+    protected $loggers = [
         'slack'  => __NAMESPACE__ . '\\Adapter\\Slack',
         'sentry' => __NAMESPACE__ . '\\Adapter\\Sentry',
     ];
@@ -106,7 +106,7 @@ class Service
     /**
      * Sets the DI service names.
      *
-     * Set the value to false to disable a logger, or string to use custom name.
+     * Set the value to false to disable a logger, or string to use custom name or skip to use default name.
      * Example: (new Service)->setNames(['sentry' => false, 'config' => 'conf'])->register();
      *
      * @param array $services

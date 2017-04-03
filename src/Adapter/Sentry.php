@@ -285,7 +285,7 @@ class Sentry extends Logger\Adapter
     }
 
     /**
-     * Should we send this log type to Slack?
+     * Should we send this log type to Sentry?
      *
      * @param int $type
      *
