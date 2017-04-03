@@ -21,5 +21,7 @@
         "sentry/sentry": "To be able to use the Sentry logging."
     },
     "require": {
+        "php": ">=7.0",
+        "ext-phalcon": "^3.0"
     }
 }
