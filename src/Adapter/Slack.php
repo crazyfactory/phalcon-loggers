@@ -2,6 +2,7 @@
 
 namespace CrazyFactory\PhalconLogger\Adapter;
 
+use CrazyFactory\PhalconLogger\Formatter;
 use Phalcon\Config;
 use Phalcon\Logger\Adapter;
 
@@ -12,6 +13,9 @@ class Slack extends Adapter
 {
     /** @var \Phalcon\Config */
     protected $config;
+
+    /** @var int The number of logs/messages sent to slack so far in current session */
+    protected $eventCount = 0;
 
     /**
      * Instantiates new Slack Adapter with given configuration.
@@ -45,6 +49,7 @@ class Slack extends Adapter
     {
         // Send if web hook is configured and the desired log level is met.
         if ($this->shouldSend($type)) {
+            $this->eventCount++;
             $this->config->slack->curlMethod === 'exec'
                 ? $this->sendExec($this->preparePayload($message, $context))
                 : $this->send($this->preparePayload($message, $context));
@@ -52,10 +57,58 @@ class Slack extends Adapter
     }
 
     /**
+     * Prepare JSON payload from message and context.
+     *
+     * @param string $message
+     * @param array  $context
+     *
+     * @return string
+     */
+    public function preparePayload(string $message, array $context = []) : string
+    {
+        $mentions = '';
+        $message  = $this->getFormatter()->interpolate($message, $context);
+
+        $context['mentions'] = $context['mentions'] ?? [];
+        if (is_string($context['mentions'])) {
+            $context['mentions'] = explode(',', $context['mentions']);
+        }
+
+        foreach ($context['mentions'] as $user) {
+            $mentions .= ' <@' . trim($user, '@ ') . '>';
+        }
+
+        // APP name distinguishes the logs if the slack channel is shared. It also eases searching in slack.
+        if ($appName = $this->config->appName) {
+            $appName = "*{$appName}@{$this->config->environment}*";
+        }
+
+        return json_encode([
+            'mrkdwn'     => true,
+            'link_names' => true,
+            'text'       => "{$appName}{$mentions}\n{$message}",
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Get the number of logs/messages sent to slack so far in current session.
+     *
+     * @return int
+     */
+    public function getEventCount() : int
+    {
+        return $this->eventCount;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getFormatter()
     {
+        if (empty($this->_formatter)) {
+            $this->_formatter = new Formatter;
+        }
+
         return $this->_formatter;
     }
 
@@ -114,39 +167,6 @@ class Slack extends Adapter
         curl_close($curl);
 
         return $code == 200;
-    }
-
-    /**
-     * Prepare JSON payload from message and context.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return string
-     */
-    protected function preparePayload(string $message, array $context = []) : string
-    {
-        $mentions = '';
-
-        $context['mentions'] = $context['mentions'] ?? [];
-        if (is_string($context['mentions'])) {
-            $context['mentions'] = explode(',', $context['mentions']);
-        }
-
-        foreach ($context['mentions'] as $user) {
-            $mentions .= ' <@' . trim($user, '@ ') . '>';
-        }
-
-        // APP name distinguishes the logs if the slack channel is shared. It also eases searching in slack.
-        if ($appName = $this->config->appName) {
-            $appName = "*{$appName}@{$this->config->environment}*";
-        }
-
-        return json_encode([
-            'mrkdwn'     => true,
-            'link_names' => true,
-            'text'       => "{$appName}{$mentions}\n{$message}",
-        ]);
     }
 
     /**

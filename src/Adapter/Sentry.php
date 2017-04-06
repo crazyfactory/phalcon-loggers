@@ -2,6 +2,7 @@
 
 namespace CrazyFactory\PhalconLogger\Adapter;
 
+use CrazyFactory\PhalconLogger\Formatter;
 use Phalcon\Config;
 use Phalcon\Logger;
 
@@ -65,10 +66,6 @@ class Sentry extends Logger\Adapter
      */
     public static function toPhalconLogLevel(string $level)
     {
-        if (is_numeric($level)) {
-            return $level;
-        }
-
         return array_flip(static::LOG_LEVELS)[$level] ?? null;
     }
 
@@ -79,10 +76,6 @@ class Sentry extends Logger\Adapter
      */
     public static function toSentryLogLevel(int $level)
     {
-        if (!is_numeric($level)) {
-            return $level;
-        }
-
         return static::LOG_LEVELS[$level] ?? null;
     }
 
@@ -98,6 +91,8 @@ class Sentry extends Logger\Adapter
      */
     public function logInternal($message, $type, int $time, array $context = [])
     {
+        $message = $this->getFormatter()->interpolate($message, $context);
+
         $this->send($message, $type, $context);
     }
 
@@ -219,10 +214,38 @@ class Sentry extends Logger\Adapter
     }
 
     /**
+     * Sets the raven client.
+     *
+     * @param \Raven_Client $client
+     *
+     * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
+     */
+    public function setClient(\Raven_Client $client) : Sentry
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Gets the raven client.
+     *
+     * @return \Raven_Client|null
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getFormatter()
     {
+        if (empty($this->_formatter)) {
+            $this->_formatter = new Formatter;
+        }
+
         return $this->_formatter;
     }
 
@@ -253,7 +276,7 @@ class Sentry extends Logger\Adapter
             $dsn     = str_replace(['<key>', '<secret>', '<project>'], [$key, $secret, $project], $this->dsnTemplate);
             $options = ['environment' => $this->config->environment] + $this->config->sentry->options->toArray();
 
-            $this->client = new \Raven_Client($dsn, $options);
+            $this->setClient(new \Raven_Client($dsn, $options));
         }
     }
 
