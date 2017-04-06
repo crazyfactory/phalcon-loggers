@@ -1,0 +1,19 @@
+sudo: required
+
+cache:
+  directories:
+  - $HOME/.composer/cache
+
+language: php
+php:
+  - 7.0
+
+env:
+  matrix:
+  - PHALCON_VERSION="3.0.x"
+
+install:
+  - composer install --prefer-dist
+
+script:
+  - vendor/bin/phpunit
