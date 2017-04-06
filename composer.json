@@ -17,11 +17,19 @@
             "CrazyFactory\\PhalconLogger\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": { "CrazyFactory\\PhalconLogger\\Test\\": "tests/" }
+    },
     "suggest": {
         "sentry/sentry": "To be able to use the Sentry logging."
     },
     "require": {
         "php": ">=7.0",
         "ext-phalcon": "^3.0"
+    },
+    "require-dev": {
+        "sentry/sentry": "^1.6.2",
+        "phpunit/phpunit": "^5.7.0",
+        "mockery/mockery": "@stable"
     }
 }
