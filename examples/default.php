@@ -21,8 +21,8 @@ putenv('SENTRY_CURL_METHOD=exec');
 //
 // Sentry is not enabled and loaded by default by this library, you have to run `composer require sentry/sentry`
 // and register the raven autoloader like so:
-require_once '/path/to/vendor/sentry/sentry/lib/Raven/Autoloader.php';
-Raven_Autoloader::register();
+// require_once '/path/to/vendor/sentry/sentry/lib/Raven/Autoloader.php';
+// Raven_Autoloader::register();
 
 $id = (new Phalcon\Security\Random)->uuid();
 $di = new Phalcon\Di\FactoryDefault;
@@ -45,7 +45,7 @@ $logger = $di->getShared('logger');
 $logger->setRequestId($id);
 
 $logger->special('slack:: test package phalcon-loggers ' . $id, ['mentions' => 'slackbot']);
-$logger->critical('sentry:: test package phalcon-loggers ' . $id);
+// $logger->critical('sentry:: test package phalcon-loggers ' . $id);
 
 // Give back the feedback to user.
 echo 'Something is wrong, your request ID is ', $id;
