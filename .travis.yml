@@ -1,0 +1,27 @@
+sudo: required
+
+cache:
+  directories:
+  - $HOME/.composer/cache
+
+git:
+  depth: 1
+
+language: php
+php:
+  - 7.0
+
+env:
+  matrix:
+  - PHALCON_VERSION="3.0.x"
+  - PHALCON_VERSION="3.1.x"
+
+install:
+  - git clone --depth=1 -q --branch=$PHALCON_VERSION https://github.com/phalcon/cphalcon.git
+  - cd cphalcon/build; bash install &>/dev/null && phpenv config-add ../tests/_ci/phalcon.ini &> /dev/null && cd ../..
+  - php --ri phalcon
+  - composer selfupdate
+  - travis_retry composer install --prefer-dist
+
+script:
+  - vendor/bin/phpunit

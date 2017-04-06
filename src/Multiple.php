@@ -69,7 +69,7 @@ class Multiple extends Logger\Multiple
      *
      * @param string $requestId
      *
-     * @return CrazyFactory\PhalconLogger\Multiple
+     * @return \CrazyFactory\PhalconLogger\Multiple
      */
     public function setRequestId(string $requestId) : Multiple
     {

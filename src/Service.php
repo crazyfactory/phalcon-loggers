@@ -12,12 +12,13 @@ class Service
     protected $services = [
         'logger' => 'logger',
         'config' => 'config',
+        // Disable sentry by default. See __construct().
         'sentry' => false,
         'slack'  => 'slack',
     ];
 
-    // Loggers provided by the service and their FQCN.
-    private $loggers = [
+    // Loggers provided by the service and their FQCN. The keys here should match the service keys above.
+    protected $loggers = [
         'slack'  => __NAMESPACE__ . '\\Adapter\\Slack',
         'sentry' => __NAMESPACE__ . '\\Adapter\\Sentry',
     ];
@@ -35,8 +36,8 @@ class Service
     /**
      * Register the loggers into DI individually and as a multiple handler
      *
-     * @param \Phalcon\Config|array|string $config
-     * @param \Phalcon\Di|null             $di
+     * @param \Phalcon\Config|array|string $config A config object, config array or file which returns config.
+     * @param \Phalcon\Di|null             $di     The current DI, default will be used when omitted.
      *
      * @return void
      */
@@ -53,14 +54,14 @@ class Service
         }
 
         if (is_string($config) && is_file($config)) {
-            $config = require_once $config;
+            $config = require $config;
         }
 
         if (is_array($config)) {
             $config = new Config($config);
         }
 
-        if (!$config instanceof Config || !$config->environment) {
+        if (!$config instanceof Config || !$config->get('environment')) {
             throw new \InvalidArgumentException('Invalid configuration parameter');
         }
 
@@ -74,8 +75,8 @@ class Service
                 continue;
             }
 
-            $loggers[] = $service;
-            $di->setShared($service, function () use ($config, $class) {
+            $loggers[] = $name;
+            $di->setShared($name, function () use ($config, $class) {
                 return new $class($config);
             });
         }
@@ -106,7 +107,7 @@ class Service
     /**
      * Sets the DI service names.
      *
-     * Set the value to false to disable a logger, or string to use custom name.
+     * Set the value to false to disable a logger, or string to use custom name or skip to use default name.
      * Example: (new Service)->setNames(['sentry' => false, 'config' => 'conf'])->register();
      *
      * @param array $services
