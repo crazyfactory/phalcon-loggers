@@ -68,5 +68,25 @@ return [
             \Phalcon\Logger::SPECIAL,
             \Phalcon\Logger::CUSTOM,
         ],
+
+        // The default context. Can be overridden with context parameter on each call to log:
+        // Eg: di->get('slack')->log(level, msg, overrideContext).
+        // Also supported: 'icon_emoji', 'icon_url' and 'username' contexts here.
+        'context' => [
+            'channel'    => '#general',
+            'mrkdwn'     => true,
+            'link_names' => true,
+        ],
+
+        // Color map for attachments.
+        'colors' => [
+            \Phalcon\Logger::EMERGENCE => 'danger',
+            \Phalcon\Logger::CRITICAL  => 'danger',
+            \Phalcon\Logger::ERROR     => 'danger',
+            \Phalcon\Logger::ALERT     => 'good',
+            \Phalcon\Logger::INFO      => 'good',
+            \Phalcon\Logger::NOTICE    => 'warning',
+            \Phalcon\Logger::WARNING   => 'warning',
+        ],
     ],
 ];

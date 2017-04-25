@@ -297,6 +297,12 @@ class Sentry extends Logger\Adapter
 
         $context += ['level' => static::toSentryLogLevel($type)];
 
+        // Wipe out extraneous keys. Issue #3.
+        $context = array_intersect_key($context, array_flip([
+            'context', 'extra', 'fingerprint', 'level',
+            'logger', 'release', 'tags',
+        ]));
+
         // Tag current request ID for search/trace.
         if ($this->requestId) {
             $this->client->tags_context(['request' => $this->requestId]);

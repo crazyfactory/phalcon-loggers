@@ -31,5 +31,11 @@
         "sentry/sentry": "^1.6.2",
         "phpunit/phpunit": "^5.7.0",
         "mockery/mockery": "@stable"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        }
     }
 }

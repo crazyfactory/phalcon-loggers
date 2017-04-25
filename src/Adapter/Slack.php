@@ -47,6 +47,8 @@ class Slack extends Adapter
      */
     public function logInternal($message, $type, $time, array $context = [])
     {
+        $context += compact('time', 'type');
+
         // Send if web hook is configured and the desired log level is met.
         if ($this->shouldSend($type)) {
             $this->eventCount++;
@@ -83,11 +85,34 @@ class Slack extends Adapter
             $appName = "*{$appName}@{$this->config->environment}*";
         }
 
-        return json_encode([
-            'mrkdwn'     => true,
-            'link_names' => true,
-            'text'       => "{$appName}{$mentions}\n{$message}",
-        ], JSON_UNESCAPED_UNICODE);
+        $payload = isset($this->config->slack->context)
+            ? $this->config->slack->context->toArray()
+            : [];
+
+        $payload += ['text' => "{$appName}{$mentions}\n{$message}"];
+
+        // Attachment.
+        if (!empty($context['attachment']) && is_array($context['attachment'])) {
+            $colors = isset($this->config->slack->colors)
+                ? $this->config->slack->colors->toArray()
+                : [];
+
+            $payload['attachments'] = [$context['attachment'] + [
+                'color'     => $colors[$context['type'] ?? -1] ?? '#e3e4e6',
+                'fallback'  => $message,
+                'mrkdwn_in' => ['fields'],
+                'text'      => $message,
+                'ts'        => $context['time'] ?? time(),
+            ]];
+        }
+
+        foreach (['channel', 'icon_url', 'icon_emoji', 'username'] as $key) {
+            if (!empty($context[$key])) {
+                $payload[$key] = $context[$key];
+            }
+        }
+
+        return json_encode($payload, JSON_UNESCAPED_UNICODE);
     }
 
     /**

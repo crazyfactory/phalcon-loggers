@@ -32,7 +32,7 @@ class Multiple extends Logger\Multiple
                 'message' => $exception->getMessage(),
             ];
 
-            $logger->log($type, "{class}#{code} with message '{message}' thrown at {file}:{line}", $context);
+            $logger->log($type, "{class}#{code} with message `{message}` thrown at {file}:{line}", $context);
         }
     }
 
