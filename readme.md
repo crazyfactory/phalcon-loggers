@@ -1,4 +1,4 @@
-## phalcon-loggers
+## phalcon-loggers ![build status](https://api.travis-ci.org/crazyfactory/phalcon-loggers.svg?branch=master)
 
 A collection of configurable logging adapters with logging functionality loosely PSR compatible for phalcon 3.x and PHP 7.x.
 Currently the following adapters are implemented:
