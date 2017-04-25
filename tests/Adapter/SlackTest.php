@@ -40,7 +40,7 @@ class SlackTest extends TestCase
 
     public function test_logInternal_doesnot_log_when_env_is_not_whitelisted()
     {
-        $config = require __DIR__ . '/../fixtures/config.logger.php';
+        $config                          = require __DIR__ . '/../fixtures/config.logger.php';
         $config['slack']['environments'] = [];
 
         ($slack = new Slack($config))->logInternal(__METHOD__, Logger::SPECIAL, time());
@@ -61,7 +61,7 @@ class SlackTest extends TestCase
 
     public function test_logInternal_doesnot_log_unspecified_levels()
     {
-        $config = require __DIR__ . '/../fixtures/config.logger.php';
+        $config                    = require __DIR__ . '/../fixtures/config.logger.php';
         $config['slack']['levels'] = [Logger::ERROR];
 
         ($slack = new Slack($config))->logInternal(__METHOD__, Logger::INFO, time());
@@ -71,9 +71,9 @@ class SlackTest extends TestCase
 
     public function test_logInternal_logs_specified_levels()
     {
-        $config = require __DIR__ . '/../fixtures/config.logger.php';
+        $config                        = require __DIR__ . '/../fixtures/config.logger.php';
         $config['slack']['webhookUrl'] = 'dummy.url';
-        $config['slack']['levels'] = [Logger::CRITICAL];
+        $config['slack']['levels']     = [Logger::CRITICAL];
 
         ($slack = new Slack($config))->logInternal(__METHOD__, Logger::CRITICAL, time());
         $this->assertSame(1, $slack->getEventCount(), 'one_event_should_have_been_logged');
@@ -93,15 +93,27 @@ class SlackTest extends TestCase
         return [
             [
                 'hello {name}, this is a test',
-                ['mentions' => 'slackbot,test', 'name' => 'there'],
+                ['mentions' => 'slackbot,test', 'name' => 'there', 'attachment' => [
+                    'title' => 'A',
+                    'text'  => 'apple',
+                    'color' => 'good',
+                ], 'type' => 8, 'time' => $t = time()],
                 [
                     'environment' => 'test',
                     'appName'     => 'phalcon-loggers',
+                    'slack'       => ['context' => ['channel' => '#random']],
                 ],
                 [
-                    'mrkdwn'     => true,
-                    'link_names' => true,
-                    'text'       => "*phalcon-loggers@test* <@slackbot> <@test>\nhello there, this is a test",
+                    'channel' => '#random',
+                    'text' => "*phalcon-loggers@test* <@slackbot> <@test>\nhello there, this is a test",
+                    'attachments' => [[
+                        'title'     => 'A',
+                        'text'      => 'apple',
+                        'color'     => 'good',
+                        'fallback'  => 'hello there, this is a test',
+                        'mrkdwn_in' => ['fields'],
+                        'ts'        => $t,
+                    ]],
                 ],
             ],
             [
@@ -110,11 +122,11 @@ class SlackTest extends TestCase
                 [
                     'environment' => 'test',
                     'appName'     => '',
+                    'slack'       => ['context' => ['channel' => '#general']],
                 ],
                 [
-                    'mrkdwn'     => true,
-                    'link_names' => true,
-                    'text'       => " <@test>\nanother test",
+                    'channel' => '#general',
+                    'text'    => " <@test>\nanother test",
                 ],
             ],
             [
@@ -123,11 +135,11 @@ class SlackTest extends TestCase
                 [
                     'environment' => 'test',
                     'appName'     => '',
+                    'slack'       => ['context' => ['mrkdwn' => false]],
                 ],
                 [
-                    'mrkdwn'     => true,
-                    'link_names' => true,
-                    'text'       => "\nanother test",
+                    'mrkdwn' => false,
+                    'text'   => "\nanother test",
                 ],
             ],
         ];

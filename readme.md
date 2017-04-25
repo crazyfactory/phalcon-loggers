@@ -56,9 +56,30 @@ $di->getShared('logger')->info('some text');
 // Supports interpolation for keys wrapped in curly brace.
 $di->getShared('logger')->critical('some text {key}', ['key' => 'val']);
 
+//
+// Below examples assume that info level is allowed in config->slack->levels array.
+//
 // Mention an user in slack:
-$di->getShared('slack')->info('some text {a}', ['mentions' => 'slackbot', 'a' => 10]);
+$context = ['mentions' => 'slackbot', 'a' => 10];
+$di->getShared('slack')->info('some text {a}', $context);
 
+// Customize channel, username, icon_emoji, icon_url via context:
+$context += [
+    'username' => 'bot',
+    'channel' => '#general',
+    'icon_emoji' => ':monkey_face:',
+];
+$di->getShared('slack')->info('some other text {a}', $context);
+
+// Attachment:
+$context += [
+    'attachment' => [
+        'title' => 'Attachment title',
+        'text' => 'Attachment text',
+        'color' => 'good',
+    ],
+];
+$di->getShared('slack')->info('yet other text {a} with attachment', $context);
 ```
 
 See [examples](examples/) for details and various integration samples.

@@ -44,7 +44,17 @@ $logger = $di->getShared('logger');
 // Set the request ID for current session, which is used by each of the registered loggers (only sentry has this feature ATM).
 $logger->setRequestId($id);
 
-$logger->special('slack:: test package phalcon-loggers ' . $id, ['mentions' => 'slackbot']);
+$logger->special('slack:: test package phalcon-loggers ' . $id, [
+    'mentions' => 'channel',
+    'attachment' => [
+        'title' => 'Attachment title',
+        'text' => 'Attachment text',
+        'color' => 'good',
+    ],
+    'username' => 'adhocore',
+    'channel' => '#general',
+    'icon_emoji' => ':+1:',
+]);
 // $logger->critical('sentry:: test package phalcon-loggers ' . $id);
 
 // Give back the feedback to user.

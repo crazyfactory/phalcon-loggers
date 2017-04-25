@@ -29,7 +29,7 @@ class MultipleTest extends TestCase
         $handler  = m::mock('CrazyFactory\\PhalconLogger\\Adapter\\Slack')
             ->shouldReceive('log')->times(1)->andReturnUsing(function ($type, $messageTemplate) {
                 $this->assertSame(Logger::ERROR, $type);
-                $this->assertSame('{class}#{code} with message \'{message}\' thrown at {file}:{line}', $messageTemplate);
+                $this->assertSame('{class}#{code} with message `{message}` thrown at {file}:{line}', $messageTemplate);
             })
         ;
 

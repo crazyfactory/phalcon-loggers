@@ -11,6 +11,20 @@ return [
         'curlMethod'   => 'sync',
         'headers'      => [],
         'levels'       => [Logger::SPECIAL],
+        'context' => [
+            'channel'    => '#general',
+            'mrkdwn'     => true,
+            'link_names' => true,
+        ],
+        'colors' => [
+            Logger::EMERGENCE => 'danger',
+            Logger::CRITICAL  => 'danger',
+            Logger::ERROR     => 'danger',
+            Logger::ALERT     => 'good',
+            Logger::INFO      => 'good',
+            Logger::NOTICE    => 'warning',
+            Logger::WARNING   => 'warning',
+        ],
     ],
     'sentry'      => [
         'credential' => [
