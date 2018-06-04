@@ -1,8 +1,8 @@
 <?php
 
-namespace CrazyFactory\PhalconLogger\Adapter;
+namespace Easyconn\PhalconLogger\Adapter;
 
-use CrazyFactory\PhalconLogger\Formatter;
+use Easyconn\PhalconLogger\Formatter;
 use Phalcon\Config;
 use Phalcon\Logger;
 

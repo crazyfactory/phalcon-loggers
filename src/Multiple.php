@@ -1,6 +1,6 @@
 <?php
 
-namespace CrazyFactory\PhalconLogger;
+namespace Easyconn\PhalconLogger;
 
 use Phalcon\Logger;
 

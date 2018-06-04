@@ -1,5 +1,5 @@
 {
-    "name": "crazyfactory/phalcon-loggers",
+    "name": "easyconn/phalcon-loggers",
     "description": "Phalcon logging adapters for Slack and Sentry.",
     "type": "library",
     "keywords": [
@@ -14,11 +14,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "CrazyFactory\\PhalconLogger\\": "src/"
+            "Easyconn\\PhalconLogger\\": "src/"
         }
     },
     "autoload-dev": {
-        "psr-4": { "CrazyFactory\\PhalconLogger\\Test\\": "tests/" }
+        "psr-4": { "Easyconn\\PhalconLogger\\Test\\": "tests/" }
     },
     "suggest": {
         "sentry/sentry": "To be able to use the Sentry logging."
