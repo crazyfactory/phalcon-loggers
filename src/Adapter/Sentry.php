@@ -37,8 +37,6 @@ class Sentry extends Logger\Adapter
     /** @var Config */
     protected $config;
 
-    protected $dsnTemplate = 'https://<key>:<secret>@sentry.io/<project>';
-
     /**
      * Instantiates new Sentry Adapter with given configuration.
      *
@@ -268,15 +266,10 @@ class Sentry extends Logger\Adapter
             return;
         }
 
-        $key     = $this->config->sentry->credential->key;
-        $secret  = $this->config->sentry->credential->secret;
-        $project = $this->config->sentry->credential->projectId;
-
-        if ($key && $secret && $project) {
-            $dsn     = str_replace(['<key>', '<secret>', '<project>'], [$key, $secret, $project], $this->dsnTemplate);
+        if (isset($this->config->sentry->dsn)) {
             $options = ['environment' => $this->config->environment] + $this->config->sentry->options->toArray();
 
-            $this->setClient(new \Raven_Client($dsn, $options));
+            $this->setClient(new \Raven_Client($this->config->sentry->dsn, $options));
         }
     }
 
