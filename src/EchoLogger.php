@@ -19,6 +19,11 @@ class EchoLogger extends BaseLogger
 
     /**
      * Echoes the log message as it is in CLI!
+     *
+     * @param string $message
+     * @param int $type
+     * @param int $time
+     * @param array $context
      */
     protected function logInternal(string $message, int $type, int $time, array $context)
     {
