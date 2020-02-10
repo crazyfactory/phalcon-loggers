@@ -1,0 +1,16 @@
+{
+    "file": [
+        "./docker/docker-compose.yml",
+        "./docker/docker-compose.local.yml"
+    ],
+    "service": "phalcon-loggers-php-fpm",
+    "actions": {
+        "bash": {
+            "service": "@host",
+            "command": "docker exec -it --user root phalcon-loggers-php-fpm sh"
+        },
+        "test": {
+            "command": "vendor/bin/phpunit %args%"
+        }
+    }
+}
