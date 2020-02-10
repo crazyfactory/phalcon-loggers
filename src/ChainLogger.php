@@ -3,8 +3,8 @@
 namespace CrazyFactory\PhalconLogger\Adapter;
 
 use CrazyFactory\PhalconLogger\LineFormatter;
-use Phalcon\Logger\AdapterInterface;
 use Phalcon\Logger\Adapter\File as FileLogger;
+use Phalcon\Logger\AdapterInterface;
 use Phalcon\Logger\Multiple;
 
 /**
