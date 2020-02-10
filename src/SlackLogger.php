@@ -20,7 +20,7 @@ class SlackLogger extends BaseLogger
 
     private $sentryProjectUrl;
 
-    public function __construct(Config $config, SlackClient $slackClient)
+    public function __construct(Config $config, SlackClient $slackClient = null)
     {
         $this->slackClient = $slackClient;
         parent::__construct($config);
@@ -43,6 +43,10 @@ class SlackLogger extends BaseLogger
      */
     protected function logInternal(string $message, int $type, int $time, array $context)
     {
+        if (empty($this->slackClient)) {
+            return;
+        }
+
         // format() is required as it does interpolation and other processing required!
         $message = $this->getFormatter()->format($message, $type, $time, $context);
 

@@ -29,7 +29,7 @@ class SentryLogger extends BaseLogger
     /** @var HubInterface */
     private $sentry;
 
-    public function __construct(Config $config, HubInterface $sentry)
+    public function __construct(Config $config, HubInterface $sentry = null)
     {
         $this->sentry = $sentry;
         parent::__construct($config);
@@ -40,8 +40,9 @@ class SentryLogger extends BaseLogger
      */
     protected function logInternal(string $message, int $type, int $time, array $context)
     {
-        $di = \Phalcon\Di::getDefault();
-
+        if (empty($this->sentry)) {
+            return;
+        }
 
         // format() is required as it does interpolation and other processing required!
         $message = $this->getFormatter()->format($message, $type, $time, $context);
