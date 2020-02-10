@@ -1,6 +1,6 @@
 <?php
 
-namespace CrazyFactory\PhalconLogger\Adapter;
+namespace CrazyFactory\PhalconLogger;
 
 use Phalcon\Config;
 use Phalcon\Logger\Adapter as LoggerAdapter;
