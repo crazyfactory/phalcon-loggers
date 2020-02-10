@@ -80,7 +80,7 @@ $config = [
     ],
 ];
 $di->setShared('sentry', function () use ($config) {
-    return new CrazyFactory\PhalconLogger\Adapter\Sentry($config);
+    return new CrazyFactory\PhalconLogger\Adapter\SentryLogger($config);
 });
 $di->setShared('slack', function () use ($config) {
     return new CrazyFactory\PhalconLogger\Adapter\Slack($config);

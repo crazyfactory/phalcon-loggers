@@ -21,15 +21,19 @@
         "psr-4": { "CrazyFactory\\PhalconLogger\\Test\\": "tests/" }
     },
     "suggest": {
-        "sentry/sentry": "To be able to use the Sentry logging."
+        "sentry/sentry": "To be able to use the Sentry logging.",
+        "crazyfactory/slack": "To be able to use Slack logging."
     },
     "require": {
         "php": ">=7.0",
-        "ext-phalcon": "^3.0"
+        "ext-phalcon": "^3.0",
+        "ext-json": "*"
     },
     "require-dev": {
-        "sentry/sentry": "^1.6.2",
         "phpunit/phpunit": "^5.7.0",
+        "sentry/sentry": "^2.2",
+        "crazyfactory/slack": "^2.0.0",
+        "php-http/guzzle6-adapter": "^2.0",
         "mockery/mockery": "@stable",
         "phalcon/ide-stubs": "^3.4"
     },

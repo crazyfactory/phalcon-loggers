@@ -3,7 +3,7 @@
 namespace CrazyFactory\PhalconLogger\Test\Adapter;
 
 use Mockery as m;
-use CrazyFactory\PhalconLogger\Adapter\Sentry;
+use CrazyFactory\PhalconLogger\Adapter\SentryLogger;
 use CrazyFactory\PhalconLogger\Test\TestCase;
 use Phalcon\Config;
 use Phalcon\Logger;
@@ -16,7 +16,7 @@ class SentryTest extends TestCase
 
         $this->assertTrue(is_array($config));
 
-        new Sentry($config);
+        new SentryLogger($config);
     }
 
     public function test_construct_accepts_config_object()
@@ -26,7 +26,7 @@ class SentryTest extends TestCase
         $this->assertTrue(is_object($config));
         $this->assertInstanceOf(Config::class, $config);
 
-        new Sentry($config);
+        new SentryLogger($config);
     }
 
     /**
@@ -36,19 +36,19 @@ class SentryTest extends TestCase
     {
         $config = __DIR__ . '/../fixtures/config.logger.php';
 
-        new Sentry($config);
+        new SentryLogger($config);
     }
 
     public function test_toPhalconLogLevel()
     {
-        $this->assertNull(Sentry::toPhalconLogLevel('undefined'), 'should_give_null_for_undefined_map');
-        $this->assertTrue(is_int(Sentry::toPhalconLogLevel(\Raven_Client::ERROR)), 'should_give_int_for_defined_map');
+        $this->assertNull(SentryLogger::toPhalconLogLevel('undefined'), 'should_give_null_for_undefined_map');
+        $this->assertTrue(is_int(SentryLogger::toPhalconLogLevel(\Raven_Client::ERROR)), 'should_give_int_for_defined_map');
     }
 
     public function test_toSentryLogLevel()
     {
-        $this->assertNull(Sentry::toSentryLogLevel(-1), 'should_give_null_for_undefined_map');
-        $this->assertTrue(is_string(Sentry::toSentryLogLevel(Logger::ERROR)), 'should_give_string_for_defined_map');
+        $this->assertNull(SentryLogger::toSentryLogLevel(-1), 'should_give_null_for_undefined_map');
+        $this->assertTrue(is_string(SentryLogger::toSentryLogLevel(Logger::ERROR)), 'should_give_string_for_defined_map');
     }
 
     public function test_logInternal_doesnot_log_when_env_is_not_whitelisted()
@@ -57,7 +57,7 @@ class SentryTest extends TestCase
         $config['sentry']['environments'] = [];
 
         $client = m::spy('Raven_Client');
-        ($sentry = new Sentry($config))->logInternal('message from ' . __METHOD__, Logger::INFO, time());
+        ($sentry = new SentryLogger($config))->logInternal('message from ' . __METHOD__, Logger::INFO, time());
 
         $client->shouldNotHaveReceived('captureMessage');
     }
@@ -67,7 +67,7 @@ class SentryTest extends TestCase
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
         $client = m::spy('Raven_Client');
-        ($sentry = new Sentry($config))->logInternal('message from ' . __METHOD__, Logger::INFO, time());
+        ($sentry = new SentryLogger($config))->logInternal('message from ' . __METHOD__, Logger::INFO, time());
 
         $this->assertNull($sentry->getClient(), 'client_should_not_be_set');
 
@@ -81,7 +81,7 @@ class SentryTest extends TestCase
         $config = require __DIR__ . '/../fixtures/config.logger.php';
         $config['sentry']['levels'] = [Logger::ERROR];
 
-        ($sentry = new Sentry($config))->setClient($client)->logInternal(__METHOD__, Logger::INFO, time());
+        ($sentry = new SentryLogger($config))->setClient($client)->logInternal(__METHOD__, Logger::INFO, time());
 
         $this->assertInstanceOf(\Raven_Client::class, $sentry->getClient(), 'client_should_be_set');
 
@@ -95,7 +95,7 @@ class SentryTest extends TestCase
         $config = require __DIR__ . '/../fixtures/config.logger.php';
         $config['sentry']['levels'] = [Logger::CRITICAL];
 
-        ($sentry = new Sentry($config))->setClient($client)->logInternal(__METHOD__, Logger::CRITICAL, time());
+        ($sentry = new SentryLogger($config))->setClient($client)->logInternal(__METHOD__, Logger::CRITICAL, time());
 
         $this->assertInstanceOf(\Raven_Client::class, $sentry->getClient(), 'client_should_be_set');
 
@@ -109,7 +109,7 @@ class SentryTest extends TestCase
         $config = require __DIR__ . '/../fixtures/config.logger.php';
         $config['sentry']['dontReport'] = [IgnoredException::class];
 
-        ($sentry = new Sentry($config))->setClient($client)->logException(new IgnoredException, [], Logger::CRITICAL);
+        ($sentry = new SentryLogger($config))->setClient($client)->logException(new IgnoredException, [], Logger::CRITICAL);
 
         $client->shouldNotHaveReceived('captureException');
     }
@@ -121,7 +121,7 @@ class SentryTest extends TestCase
         $config = require __DIR__ . '/../fixtures/config.logger.php';
         $config['sentry']['dontReport'] = [];
 
-        ($sentry = new Sentry($config))->setClient($client)->logException(new IgnoredException, [], Logger::CRITICAL);
+        ($sentry = new SentryLogger($config))->setClient($client)->logException(new IgnoredException, [], Logger::CRITICAL);
 
         $client->shouldHaveReceived('captureException');
     }
@@ -131,7 +131,7 @@ class SentryTest extends TestCase
         $client = m::spy('Raven_Client');
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        (new Sentry($config))->setClient($client)->setUserContext($context = ['id' => 1, 'email' => 'test@example.com']);
+        (new SentryLogger($config))->setClient($client)->setUserContext($context = ['id' => 1, 'email' => 'test@example.com']);
 
         $client->shouldHaveReceived('user_context', [$context]);
     }
@@ -141,7 +141,7 @@ class SentryTest extends TestCase
         $client = m::spy('Raven_Client');
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        (new Sentry($config))->setClient($client)->setExtraContext($context = ['key1' => 1, 'key2' => 'two']);
+        (new SentryLogger($config))->setClient($client)->setExtraContext($context = ['key1' => 1, 'key2' => 'two']);
 
         $client->shouldHaveReceived('extra_context', [$context]);
     }
@@ -151,7 +151,7 @@ class SentryTest extends TestCase
         $client = m::spy('Raven_Client');
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        (new Sentry($config))->setClient($client)->setTag('name', 'value');
+        (new SentryLogger($config))->setClient($client)->setTag('name', 'value');
 
         $client->shouldHaveReceived('tags_context', [['name' => 'value']]);
     }
@@ -162,7 +162,7 @@ class SentryTest extends TestCase
         $client->breadcrumbs = m::spy('Raven_Breadcrumbs');
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        (new Sentry($config))->setClient($client)->addCrumb('hello');
+        (new SentryLogger($config))->setClient($client)->addCrumb('hello');
 
         $client->breadcrumbs->shouldHaveReceived('record');
     }
@@ -172,7 +172,7 @@ class SentryTest extends TestCase
         $client = new RavenClient;
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        $sentry = (new Sentry($config))->setClient($client);
+        $sentry = (new SentryLogger($config))->setClient($client);
 
         $this->assertNull($sentry->getLastEventId(), 'last_event_id_should_be_null_initially');
 
@@ -188,7 +188,7 @@ class SentryTest extends TestCase
     {
         $client = new RavenClient;
         $config = require __DIR__ . '/../fixtures/config.logger.php';
-        $sentry = new Sentry($config);
+        $sentry = new SentryLogger($config);
 
         $this->assertNull($sentry->getClient(), 'client_should_be_null_initially');
 
@@ -203,7 +203,7 @@ class SentryTest extends TestCase
         $client = m::spy('Raven_Client');
         $config = require __DIR__ . '/../fixtures/config.logger.php';
 
-        $sentry = (new Sentry($config))->setClient($client)->setRequestId($request = 'req' . rand());
+        $sentry = (new SentryLogger($config))->setClient($client)->setRequestId($request = 'req' . rand());
         $sentry->logInternal(__METHOD__, Logger::ERROR, time());
 
         $client->shouldHaveReceived('tags_context', [compact('request')]);
