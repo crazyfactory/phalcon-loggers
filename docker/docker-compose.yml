@@ -8,3 +8,6 @@ services:
       - ../:/var/www/project
       - ./php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/z-overrides.ini
       - ../.composer:/root/composer
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      COMPOSER_HOME: /root/composer
