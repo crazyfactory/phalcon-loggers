@@ -18,15 +18,24 @@ class SlackLogger extends BaseLogger
     /** @var HubInterface */
     private $sentry;
 
+    private $sentryProjectUrl;
+
     public function __construct(Config $config, SlackClient $slackClient)
     {
         $this->slackClient = $slackClient;
         parent::__construct($config);
     }
 
-    public function setSentry(HubInterface $sentry)
+    /**
+     * When we want to log to slack automatically when there is error reported through Sentry
+     * @param HubInterface $sentry
+     * @param string $sentryProjectUrl sentry project url
+     * ex:  https://sentry.io/crazyfactory/erp/issues
+     */
+    public function setSentry(HubInterface $sentry, string $sentryProjectUrl)
     {
         $this->sentry = $sentry;
+        $this->sentryProjectUrl = $sentryProjectUrl;
     }
 
     /**
@@ -45,7 +54,7 @@ class SlackLogger extends BaseLogger
             }
 
             if ($this->sentry && $evtId = $this->sentry->getLastEventID()) {
-                $context['text'] .= sprintf(' <https://sentry.io/crazyfactory/erp/issues/?query=%s|sentry>', $evtId);
+                $context['text'] .= sprintf(" {$this->sentryProjectUrl}/?query=%s|sentry>", $evtId);
             }
 
             $this->slackClient->send($context);
