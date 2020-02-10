@@ -53,12 +53,12 @@ class SlackLogger extends BaseLogger
         if ($this->config->slack->level >= $type) {
             $context += ['text' => $message];
 
-            if ($type < Logger::WARNING) {
+            if ($type < Logger::WARNING && !empty($this->config->slack->alert_channel)) {
                 $context['channel'] = $this->config->slack->alert_channel;
             }
 
             if ($this->sentry && $evtId = $this->sentry->getLastEventID()) {
-                $context['text'] .= sprintf(" {$this->sentryProjectUrl}/?query=%s|sentry>", $evtId);
+                $context['text'] .= sprintf(" <{$this->sentryProjectUrl}/?query=%s|sentry>", $evtId);
             }
 
             $this->slackClient->send($context);
