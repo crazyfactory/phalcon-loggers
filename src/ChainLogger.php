@@ -2,7 +2,6 @@
 
 namespace CrazyFactory\PhalconLogger;
 
-use CrazyFactory\PhalconLogger\LineFormatter;
 use Phalcon\Logger\Adapter\File as FileLogger;
 use Phalcon\Logger\AdapterInterface;
 use Phalcon\Logger\Multiple;

@@ -2,7 +2,6 @@
 
 namespace CrazyFactory\PhalconLogger;
 
-use CrazyFactory\PhalconLogger\LineFormatter;
 use Phalcon\Config;
 use Phalcon\Logger;
 use Sentry\Severity;
