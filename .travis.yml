@@ -4,7 +4,6 @@ cache:
   directories:
   - $HOME/.composer/cache
 
-
 language: node_js
 node_js:
   - "8"
@@ -26,6 +25,14 @@ before_install:
 install:
   - dopr pull && dopr up -d
   - dopr composer install
+  - scripts/ci-install.sh
 
 script:
   - dopr test
+
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  skip_cleanup: false
+  on:
+    tags: true
