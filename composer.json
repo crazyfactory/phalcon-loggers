@@ -28,7 +28,7 @@
         "ext-phalcon": "^3.0"
     },
     "require-dev": {
-        "sentry/sentry": "^1.6.2",
+        "sentry/sdk": "^2.1.0",
         "phpunit/phpunit": "^5.7.0",
         "mockery/mockery": "@stable"
     },
