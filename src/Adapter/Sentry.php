@@ -5,6 +5,8 @@ namespace Easyconn\PhalconLogger\Adapter;
 use Easyconn\PhalconLogger\Formatter;
 use Phalcon\Config;
 use Phalcon\Logger;
+use Sentry\State\Scope as SentryScope;
+use Sentry\Severity;
 
 /**
  * The Sentry logger adapter for phalcon.
@@ -13,16 +15,16 @@ class Sentry extends Logger\Adapter
 {
     // The map of Phalcon log levels to Sentry log levels. Throughout the application, we use only Phalcon levels.
     const LOG_LEVELS = [
-        Logger::EMERGENCE => \Raven_Client::FATAL,
-        Logger::CRITICAL  => \Raven_Client::FATAL,
-        Logger::ALERT     => \Raven_Client::INFO,
-        Logger::ERROR     => \Raven_Client::ERROR,
-        Logger::WARNING   => \Raven_Client::WARNING,
-        Logger::NOTICE    => \Raven_Client::DEBUG,
-        Logger::INFO      => \Raven_Client::INFO,
-        Logger::DEBUG     => \Raven_Client::DEBUG,
-        Logger::CUSTOM    => \Raven_Client::INFO,
-        Logger::SPECIAL   => \Raven_Client::INFO,
+        Logger::EMERGENCE => Severity::FATAL,
+        Logger::CRITICAL  => Severity::FATAL,
+        Logger::ALERT     => Severity::INFO,
+        Logger::ERROR     => Severity::ERROR,
+        Logger::WARNING   => Severity::WARNING,
+        Logger::NOTICE    => Severity::DEBUG,
+        Logger::INFO      => Severity::INFO,
+        Logger::DEBUG     => Severity::DEBUG,
+        Logger::CUSTOM    => Severity::INFO,
+        Logger::SPECIAL   => Severity::INFO,
     ];
 
     /** @var \Raven_Client */
@@ -218,7 +220,7 @@ class Sentry extends Logger\Adapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setClient(\Raven_Client $client) : Sentry
+    public function setClient(\Sentry\Client $client) : Sentry
     {
         $this->client = $client;
 
@@ -267,9 +269,9 @@ class Sentry extends Logger\Adapter
         }
 
         if (isset($this->config->sentry->dsn)) {
-            $options = ['environment' => $this->config->environment] + $this->config->sentry->options->toArray();
+            $options = ['dsn' => $this->config->sentry->dsn, 'environment' => $this->config->environment] + $this->config->sentry->options->toArray();
 
-            $this->setClient(new \Raven_Client($this->config->sentry->dsn, $options));
+            $this->setClient((new \Sentry\ClientBuilder( new \Sentry\Options($options)))->getClient());
         }
     }
 
@@ -301,9 +303,21 @@ class Sentry extends Logger\Adapter
             $this->client->tags_context(['request' => $this->requestId]);
         }
 
+        // 
+        $scope = null;
+        if (is_array($context['extra'] ?? null)) {
+            \Sentry\configureScope(function (SentryScope $mainScope) use (&$scope) {
+                $scope = clone $mainScope;
+            });
+
+            foreach ($context['extra'] as $key => $value) {
+                $scope->setExtra($key, $value);
+            }
+        }
+
         $this->lastEventId = $loggable instanceof \Throwable
-            ? $this->client->captureException($loggable, $context)
-            : $this->client->captureMessage($loggable, [], $context);
+            ? $this->client->captureException($loggable, $scope)
+            : $this->client->captureMessage($loggable, [], $scope);
     }
 
     /**
