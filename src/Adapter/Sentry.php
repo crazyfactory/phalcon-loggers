@@ -5,17 +5,18 @@ namespace Easyconn\PhalconLogger\Adapter;
 use Easyconn\PhalconLogger\Formatter;
 use Phalcon\Config;
 use Phalcon\Logger;
+use Phalcon\Logger\Item;
 use Sentry\State\Scope as SentryScope;
 use Sentry\Severity;
 
 /**
  * The Sentry logger adapter for phalcon.
  */
-class Sentry extends Logger\Adapter
+class Sentry extends Logger\Adapter\AbstractAdapter
 {
     // The map of Phalcon log levels to Sentry log levels. Throughout the application, we use only Phalcon levels.
     const LOG_LEVELS = [
-        Logger::EMERGENCE => Severity::FATAL,
+        Logger::EMERGENCY => Severity::FATAL,
         Logger::CRITICAL  => Severity::FATAL,
         Logger::ALERT     => Severity::INFO,
         Logger::ERROR     => Severity::ERROR,
@@ -23,8 +24,7 @@ class Sentry extends Logger\Adapter
         Logger::NOTICE    => Severity::DEBUG,
         Logger::INFO      => Severity::INFO,
         Logger::DEBUG     => Severity::DEBUG,
-        Logger::CUSTOM    => Severity::INFO,
-        Logger::SPECIAL   => Severity::INFO,
+        Logger::CUSTOM    => Severity::INFO
     ];
 
     /** @var \Raven_Client */
@@ -96,24 +96,14 @@ class Sentry extends Logger\Adapter
         $this->send($message, $type, $context);
     }
 
-    /**
-     * Logs the exception to Sentry.
-     *
-     * @param \Throwable $exception
-     * @param array      $context
-     * @param int|null   $type
-     *
-     * @return void
-     */
-    public function logException(\Throwable $exception, array $context = [], int $type = null)
+    public function process(Item $item): void 
     {
         foreach ($this->config->sentry->dontReport as $ignore) {
             if ($exception instanceof $ignore) {
                 return;
             }
         }
-
-        $this->send($exception, $type, $context);
+        $this->send($item->message, $item->type, $item->context);
     }
 
     /**
@@ -240,20 +230,21 @@ class Sentry extends Logger\Adapter
     /**
      * @inheritdoc
      */
-    public function getFormatter()
+    public function getFormatter1()
     {
-        if (empty($this->_formatter)) {
-            $this->_formatter = new Formatter;
+        if (empty($this->formatter)) {
+            $this->formatter = new Formatter;
         }
 
-        return $this->_formatter;
+        return $this->formatter;
     }
 
     /**
      * @inheritdoc
      */
-    public function close()
+    public function close(): bool
     {
+        return true;
     }
 
     /**
