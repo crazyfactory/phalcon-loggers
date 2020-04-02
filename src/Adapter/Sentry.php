@@ -96,6 +96,26 @@ class Sentry extends Logger\Adapter\AbstractAdapter
         $this->send($message, $type, $context);
     }
 
+    /**
+     * Logs the exception to Sentry.
+     *
+     * @param \Throwable $exception
+     * @param array      $context
+     * @param int|null   $type
+     *
+     * @return void
+     */
+    public function logException(\Throwable $exception, array $context = [], int $type = null)
+    {
+        foreach ($this->config->sentry->dontReport as $ignore) {
+            if ($exception instanceof $ignore) {
+                return;
+            }
+        }
+
+        $this->send($exception, $type, $context);
+    }
+
     public function process(Item $item): void 
     {
         foreach ($this->config->sentry->dontReport as $ignore) {
