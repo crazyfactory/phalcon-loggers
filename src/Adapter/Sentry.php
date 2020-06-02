@@ -328,7 +328,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
 
         $this->lastEventId = $loggable instanceof \Throwable
             ? $this->client->captureException($loggable, $scope)
-            : $this->client->captureMessage($loggable, [], $scope);
+            : $this->client->captureMessage($loggable, null, $scope);
     }
 
     /**
