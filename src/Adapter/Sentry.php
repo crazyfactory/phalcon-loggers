@@ -261,8 +261,9 @@ class Sentry extends Logger\Adapter\AbstractAdapter
     /**
      * @inheritdoc
      */
-    public function close(): bool
+    public function close(?int $timeout = null): bool
     {
+        $this->client->flush($timeout);
         return true;
     }
 
@@ -327,7 +328,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
 
         $this->lastEventId = ($loggable instanceof \Throwable && $loggable->getTrace() != null)
             ? $this->client->captureException($loggable, $scope)
-            : $this->client->captureMessage($loggable, null, $scope);
+            : $this->client->captureMessage($loggable, new Severity(static::toSentryLogLevel($type)), $scope);
     }
 
     /**
