@@ -84,12 +84,11 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @param string|int $message
      * @param string|int $type
-     * @param int        $time
      * @param array      $context
      *
      * @return void
      */
-    public function logInternal($message, $type, int $time, array $context = [])
+    public function logInternal($message, $type, array $context = [])
     {
         $message = $this->getFormatter()->interpolate($message, $context);
 
