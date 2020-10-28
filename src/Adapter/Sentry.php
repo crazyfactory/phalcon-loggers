@@ -263,7 +263,9 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      */
     public function close(?int $timeout = null): bool
     {
-        $this->client->flush($timeout);
+        if ($this->client) {
+            $this->client->flush($timeout);
+        }
         return true;
     }
 
