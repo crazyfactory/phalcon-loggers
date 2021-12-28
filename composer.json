@@ -1,41 +1,50 @@
 {
-    "name": "easyconn/phalcon-loggers",
-    "description": "Phalcon logging adapters for Slack and Sentry.",
-    "type": "library",
-    "keywords": [
-        "phalcon", "adpaters", "slack", "sentry", "logger", "logging", "phalcon-slack", "phalcon-sentry"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Jitendra Adhikari",
-            "email": "jiten.adhikary@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Easyconn\\PhalconLogger\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": { "Easyconn\\PhalconLogger\\Test\\": "tests/" }
-    },
-    "suggest": {
-        "sentry/sentry": "To be able to use the Sentry logging."
-    },
-    "require": {
-        "php": ">=8.0",
-        "ext-phalcon": "^5.0"
-    },
-    "require-dev": {
-        "sentry/sdk": "^2.1.0",
-        "phpunit/phpunit": "^5.7.0",
-        "mockery/mockery": "@stable"
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": {
-            "*": "dist"
-        }
+  "name": "easyconn/phalcon-loggers",
+  "description": "Phalcon logging adapters for Slack and Sentry.",
+  "type": "library",
+  "keywords": [
+    "phalcon",
+    "adpaters",
+    "slack",
+    "sentry",
+    "logger",
+    "logging",
+    "phalcon-slack",
+    "phalcon-sentry"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jitendra Adhikari",
+      "email": "jiten.adhikary@gmail.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Easyconn\\PhalconLogger\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Easyconn\\PhalconLogger\\Test\\": "tests/"
+    }
+  },
+  "suggest": {
+    "sentry/sentry": "To be able to use the Sentry logging."
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-phalcon": "^5.0"
+  },
+  "require-dev": {
+    "sentry/sdk": "^3.0.0",
+    "phpunit/phpunit": "^5.7.0",
+    "mockery/mockery": "@stable"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": {
+      "*": "dist"
+    }
+  }
 }

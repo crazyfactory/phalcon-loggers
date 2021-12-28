@@ -2,7 +2,7 @@
 
 namespace Easyconn\PhalconLogger;
 
-use Phalcon\Logger;
+use Phalcon\Logger\Logger;
 
 class Multiple extends Logger\Multiple
 {
@@ -71,7 +71,7 @@ class Multiple extends Logger\Multiple
      *
      * @return \CrazyFactory\PhalconLogger\Multiple
      */
-    public function setRequestId(string $requestId) : Multiple
+    public function setRequestId(string $requestId): Multiple
     {
         $requestId = substr(str_replace([' ', '-', '_'], '', $requestId), 0, 32);
 
