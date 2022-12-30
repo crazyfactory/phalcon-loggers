@@ -5,6 +5,7 @@ namespace Easyconn\PhalconLogger\Adapter;
 use Easyconn\PhalconLogger\Formatter;
 use Phalcon\Config\Config;
 use Phalcon\Logger\Logger;
+use Phalcon\Logger\Adapter\AbstractAdapter as LoggerAbstractAdapter;
 use Phalcon\Logger\Item;
 use Sentry\State\Scope as SentryScope;
 use Sentry\Severity;
@@ -12,10 +13,10 @@ use Sentry\Severity;
 /**
  * The Sentry logger adapter for phalcon.
  */
-class Sentry extends Logger\Adapter\AbstractAdapter
+class Sentry extends LoggerAbstractAdapter
 {
     // The map of Phalcon log levels to Sentry log levels. Throughout the application, we use only Phalcon levels.
-    public const LOG_LEVELS = [
+    const LOG_LEVELS = [
         Logger::EMERGENCY => Severity::FATAL,
         Logger::CRITICAL  => Severity::FATAL,
         Logger::ALERT     => Severity::INFO,
@@ -132,7 +133,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setUserContext(array $context): Sentry
+    public function setUserContext(array $context) : Sentry
     {
         if ($this->client) {
             $this->client->user_context($context);
@@ -148,7 +149,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setExtraContext(array $context): Sentry
+    public function setExtraContext(array $context) : Sentry
     {
         if ($this->client) {
             $this->client->extra_context($context);
@@ -165,7 +166,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setTag(string $key, string $value): Sentry
+    public function setTag(string $key, string $value) : Sentry
     {
         if ($this->client) {
             $this->client->tags_context([$key => $value]);
@@ -184,7 +185,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function addCrumb(string $message, string $category = 'default', array $data = [], int $type = null): Sentry
+    public function addCrumb(string $message, string $category = 'default', array $data = [], int $type = null) : Sentry
     {
         if ($this->client) {
             $level = static::toSentryLogLevel($type ?? Logger::INFO);
@@ -213,7 +214,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setRequestId(string $requestId): Sentry
+    public function setRequestId(string $requestId) : Sentry
     {
         if (empty($this->requestId)) {
             $this->requestId = $requestId;
@@ -229,7 +230,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return \CrazyFactory\PhalconLogger\Adapter\Sentry
      */
-    public function setClient(\Sentry\Client $client): Sentry
+    public function setClient(\Sentry\Client $client) : Sentry
     {
         $this->client = $client;
 
@@ -252,7 +253,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
     public function getFormatter1()
     {
         if (empty($this->formatter)) {
-            $this->formatter = new Formatter();
+            $this->formatter = new Formatter;
         }
 
         return $this->formatter;
@@ -340,7 +341,7 @@ class Sentry extends Logger\Adapter\AbstractAdapter
      *
      * @return bool
      */
-    protected function shouldSend(int $type): bool
+    protected function shouldSend(int $type) : bool
     {
         return (bool) $this->client && in_array($type, $this->config->sentry->levels->toArray(), true);
     }

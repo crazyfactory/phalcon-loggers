@@ -2,8 +2,8 @@
 
 namespace Easyconn\PhalconLogger;
 
-use Phalcon\Config\Config;
-use Phalcon\Di\Di;
+use Phalcon\Config;
+use Phalcon\Di;
 use Phalcon\Logger\AdapterInterface;
 
 class Service
@@ -85,7 +85,7 @@ class Service
         $logger = $di->has($this->services['logger']) ? $di->getShared($this->services['logger']) : null;
 
         $di->setShared($this->services['logger'], function () use ($config, $di, $loggers, $logger) {
-            $loggerStack = new Multiple();
+            $loggerStack = new Multiple;
 
             // Keep the logger that is already there in DI.
             if ($logger instanceof AdapterInterface) {
@@ -114,7 +114,7 @@ class Service
      *
      * @return \CrazyFactory\PhalconLogger\Service
      */
-    public function setNames(array $services): Service
+    public function setNames(array $services) : Service
     {
         $this->services = $services + $this->services;
 

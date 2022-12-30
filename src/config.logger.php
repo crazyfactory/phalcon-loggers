@@ -1,7 +1,5 @@
 <?php
 
-use Logger\Logger;
-
 // This is an example configuration for loggers. It is used as fallback by Service::register().
 // You can copy it in your project as src/config/logger.php OR even embed it to global application configuration.
 
@@ -37,9 +35,9 @@ return [
 
         // The log levels which are forwarded to sentry.
         'levels' => [
-            Logger::EMERGENCY,
-            Logger::CRITICAL,
-            Logger::ERROR,
+            \Phalcon\Logger\Logger::EMERGENCY,
+            \Phalcon\Logger\Logger::CRITICAL,
+            \Phalcon\Logger\Logger::ERROR,
         ],
 
         // These exceptions are not reported to sentry.
@@ -67,8 +65,8 @@ return [
 
         // The log levels which are forwarded to slack.
         'levels' => [
-            Logger::SPECIAL,
-            Logger::CUSTOM,
+            \Phalcon\Logger\Logger::SPECIAL,
+            \Phalcon\Logger\Logger::CUSTOM,
         ],
 
         // The default context. Can be overridden with context parameter on each call to log:
@@ -82,13 +80,13 @@ return [
 
         // Color map for attachments.
         'colors' => [
-            Logger::EMERGENCE => 'danger',
-            Logger::CRITICAL  => 'danger',
-            Logger::ERROR     => 'danger',
-            Logger::ALERT     => 'good',
-            Logger::INFO      => 'good',
-            Logger::NOTICE    => 'warning',
-            Logger::WARNING   => 'warning',
+            \Phalcon\Logger\Logger::EMERGENCE => 'danger',
+            \Phalcon\Logger\Logger::CRITICAL  => 'danger',
+            \Phalcon\Logger\Logger::ERROR     => 'danger',
+            \Phalcon\Logger\Logger::ALERT     => 'good',
+            \Phalcon\Logger\Logger::INFO      => 'good',
+            \Phalcon\Logger\Logger::NOTICE    => 'warning',
+            \Phalcon\Logger\Logger::WARNING   => 'warning',
         ],
     ],
 ];

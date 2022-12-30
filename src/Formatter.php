@@ -2,7 +2,7 @@
 
 namespace Easyconn\PhalconLogger;
 
-use Phalcon\Logger\Logger;
+use Phalcon\Logger;
 
 class Formatter extends Logger\Formatter
 {
